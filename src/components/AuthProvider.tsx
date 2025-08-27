@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { User, UserRole } from '../lib/types';
+import { initializeDemoData, demoUsers } from '../lib/demoData';
 
 interface AuthContextType {
   user: User | null;
@@ -20,12 +21,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(false);
-  }, []);
+    const initializeApp = async () => {
+      try {
+        // Initialize demo data
+        await initializeDemoData();
+        
+        // Ensure demo users are available for login
+        setUsers(currentUsers => {
+          if (currentUsers.length === 0) {
+            return demoUsers;
+          }
+          return currentUsers;
+        });
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error initializing app:', error);
+        setIsLoading(false);
+      }
+    };
+
+    initializeApp();
+  }, [setUsers]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     const user = users.find(u => u.email === email);
-    if (user) {
+    if (user && (email === 'admin@eventpro.com' && password === 'admin123')) {
+      setCurrentUser(user);
+      return true;
+    }
+    // For demo purposes, allow login with any existing user email and password "demo123"
+    if (user && password === 'demo123') {
       setCurrentUser(user);
       return true;
     }

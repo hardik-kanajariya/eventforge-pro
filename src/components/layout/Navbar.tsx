@@ -12,7 +12,20 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { useAuth } from '../AuthProvider';
-import { Calendar, Ticket, User, Settings, LogOut, Menu } from '@phosphor-icons/react';
+import { 
+  Calendar, 
+  Ticket, 
+  User, 
+  Settings, 
+  LogOut, 
+  Menu, 
+  House,
+  Tag,
+  Package,
+  Info,
+  Images,
+  Phone
+} from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
 interface NavbarProps {
@@ -33,13 +46,18 @@ export function Navbar({ onNavigate, currentView }: NavbarProps) {
       setLoginForm({ email: '', password: '' });
       toast.success('Logged in successfully!');
     } else {
-      toast.error('Invalid credentials. Try admin@eventpro.com / admin123');
+      toast.error('Invalid credentials. Try admin@eventpro.com / admin123 or any user email / demo123');
     }
   };
 
   const navItems = [
-    { label: 'Events', view: 'home', icon: Calendar },
-    { label: 'Tickets', view: 'tickets', icon: Ticket }
+    { label: 'Home', view: 'home', icon: House },
+    { label: 'Events', view: 'events', icon: Calendar },
+    { label: 'Offers', view: 'offers', icon: Tag },
+    { label: 'Packages', view: 'packages', icon: Package },
+    { label: 'About', view: 'about', icon: Info },
+    { label: 'Gallery', view: 'gallery', icon: Images },
+    { label: 'Contact', view: 'contact', icon: Phone }
   ];
 
   return (
@@ -152,7 +170,9 @@ export function Navbar({ onNavigate, currentView }: NavbarProps) {
                     </Button>
                   </form>
                   <div className="text-sm text-muted-foreground text-center">
-                    Demo credentials: admin@eventpro.com / admin123
+                    Demo credentials:<br />
+                    Admin: admin@eventpro.com / admin123<br />
+                    User: john.smith@email.com / demo123
                   </div>
                 </DialogContent>
               </Dialog>
