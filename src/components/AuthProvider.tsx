@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useKV } from '@github/spark/hooks';
 import { User, UserRole } from '../lib/types';
-import { initializeDemoData, demoUsers } from '../lib/demoData';
+import { generateDemoData } from '../lib/demoData';
 
 interface AuthContextType {
   user: User | null;
@@ -24,12 +24,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initializeApp = async () => {
       try {
         // Initialize demo data
-        await initializeDemoData();
+        const demoData = generateDemoData();
         
-        // Ensure demo users are available for login
+        // Initialize all data if not present
         setUsers(currentUsers => {
           if (currentUsers.length === 0) {
-            return demoUsers;
+            return demoData.users;
           }
           return currentUsers;
         });

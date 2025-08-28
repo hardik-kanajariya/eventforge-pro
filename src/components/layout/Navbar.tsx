@@ -203,7 +203,7 @@ export function Navbar({ onNavigate, currentView }: NavbarProps) {
                   <div className="text-sm text-muted-foreground text-center">
                     Demo credentials:<br />
                     Admin: admin@eventpro.com / admin123<br />
-                    User: john.smith@email.com / demo123
+                    User: john.doe@example.com / demo123
                   </div>
                 </DialogContent>
               </Dialog>

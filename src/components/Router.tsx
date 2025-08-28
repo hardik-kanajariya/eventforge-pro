@@ -13,11 +13,15 @@ import { ContactPage } from './public/ContactPage';
 import { EventDetails } from './public/EventDetails';
 import { CheckoutFlow } from './checkout/CheckoutFlow';
 import { useKV } from '@github/spark/hooks';
+import { useDemoData } from '../hooks/useDemoData';
 
 export function Router() {
   const { role } = useAuth();
   const [currentView, setCurrentView] = useKV<string>("current-view", "home");
   const [selectedEventId, setSelectedEventId] = useKV<string | null>("selected-event", null);
+  
+  // Initialize demo data
+  useDemoData();
 
   const navigate = (view: string, eventId?: string) => {
     setCurrentView(view);

@@ -8,6 +8,7 @@ import { Label } from '../ui/label';
 import { useKV } from '@github/spark/hooks';
 import { PurchasedTicket, Order, User } from '../../lib/types';
 import { useAuth } from '../AuthProvider';
+import { TicketDownload } from '../TicketDownload';
 import { 
   Ticket, 
   Calendar, 
@@ -32,6 +33,7 @@ export function UserDashboard({ onNavigate }: UserDashboardProps) {
   const [purchasedTickets] = useKV<PurchasedTicket[]>("purchased-tickets", []);
   const [orders] = useKV<Order[]>("orders", []);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<PurchasedTicket | null>(null);
   const [profileForm, setProfileForm] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -68,20 +70,7 @@ export function UserDashboard({ onNavigate }: UserDashboardProps) {
   };
 
   const downloadTicket = (ticket: PurchasedTicket) => {
-    // Simulate ticket download - in real app, this would generate and download a PDF
-    const ticketData = {
-      eventTitle: ticket.eventDetails.title,
-      ticketType: ticket.ticketDetails.name,
-      attendeeName: ticket.attendeeName,
-      eventDate: ticket.eventDetails.date,
-      eventTime: ticket.eventDetails.time,
-      eventLocation: ticket.eventDetails.location,
-      qrCode: ticket.qrCode,
-      ticketId: ticket.id
-    };
-    
-    console.log('Downloading ticket:', ticketData);
-    toast.success(`Ticket for ${ticket.eventDetails.title} downloaded!`);
+    setSelectedTicket(ticket);
   };
 
   const getStatusIcon = (status: string) => {
@@ -413,6 +402,14 @@ export function UserDashboard({ onNavigate }: UserDashboardProps) {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Ticket Download Modal */}
+      {selectedTicket && (
+        <TicketDownload 
+          ticket={selectedTicket}
+          onClose={() => setSelectedTicket(null)}
+        />
+      )}
     </div>
   );
 }
