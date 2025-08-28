@@ -208,6 +208,9 @@ export function EventsPage({ onNavigate }: EventsPageProps) {
             </Button>
           </div>
         )}
-      </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
