@@ -644,7 +644,6 @@ export function AdminDashboard() {
                         <Button variant="destructive" size="sm" onClick={() => handleDeleteEvent(event.id)}>
                           <Trash className="w-4 h-4" />
                         </Button>
-                        </Button>
                       </div>
                     </div>
                   </CardContent>
