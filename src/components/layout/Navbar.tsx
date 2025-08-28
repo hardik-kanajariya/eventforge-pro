@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Badge } from '../ui/badge';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -12,6 +13,8 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { useAuth } from '../AuthProvider';
+import { useKV } from '@github/spark/hooks';
+import { CartItem } from '../../lib/types';
 import { 
   Calendar, 
   Ticket, 
@@ -24,7 +27,8 @@ import {
   Package,
   Info,
   Images,
-  Phone
+  Phone,
+  ShoppingCart
 } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
@@ -34,19 +38,29 @@ interface NavbarProps {
 }
 
 export function Navbar({ onNavigate, currentView }: NavbarProps) {
-  const { user, role, login, logout } = useAuth();
+  const { user, role, login, logout, isLoading: authLoading } = useAuth();
+  const [cart] = useKV<CartItem[]>("cart", []);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(loginForm.email, loginForm.password);
-    if (success) {
-      setIsLoginOpen(false);
-      setLoginForm({ email: '', password: '' });
-      toast.success('Logged in successfully!');
-    } else {
-      toast.error('Invalid credentials. Try admin@eventpro.com / admin123 or any user email / demo123');
+    setIsLoginLoading(true);
+    
+    try {
+      const success = await login(loginForm.email, loginForm.password);
+      if (success) {
+        setIsLoginOpen(false);
+        setLoginForm({ email: '', password: '' });
+        toast.success('Logged in successfully!');
+      } else {
+        toast.error('Invalid credentials. Try admin@eventpro.com / admin123 or any user email / demo123');
+      }
+    } finally {
+      setIsLoginLoading(false);
     }
   };
 
@@ -95,6 +109,23 @@ export function Navbar({ onNavigate, currentView }: NavbarProps) {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
+            {/* Cart Icon */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onNavigate('checkout')}
+              className="relative"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {cartItemCount > 0 && (
+                <Badge 
+                  variant="destructive" 
+                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+                >
+                  {cartItemCount}
+                </Badge>
+              )}
+            </Button>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -165,8 +196,8 @@ export function Navbar({ onNavigate, currentView }: NavbarProps) {
                         required
                       />
                     </div>
-                    <Button type="submit" className="w-full">
-                      Sign In
+                    <Button type="submit" className="w-full" disabled={isLoginLoading}>
+                      {isLoginLoading ? 'Signing In...' : 'Sign In'}
                     </Button>
                   </form>
                   <div className="text-sm text-muted-foreground text-center">

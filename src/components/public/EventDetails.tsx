@@ -27,12 +27,24 @@ interface EventDetailsProps {
 }
 
 export function EventDetails({ eventId, onNavigate }: EventDetailsProps) {
-  const [events] = useKV<Event[]>("events", []);
+  const [events, , , eventsLoading] = useKV<Event[]>("events", []);
   const [cart, setCart] = useKV<CartItem[]>("cart", []);
   const { user } = useAuth();
   const [selectedTickets, setSelectedTickets] = useState<Record<string, number>>({});
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const event = events.find(e => e.id === eventId);
+
+  if (eventsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading event details...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -90,38 +102,47 @@ export function EventDetails({ eventId, onNavigate }: EventDetailsProps) {
     return Object.values(selectedTickets).reduce((sum, qty) => sum + qty, 0);
   };
 
-  const addToCart = () => {
-    const cartItems: CartItem[] = Object.entries(selectedTickets).map(([ticketId, quantity]) => {
-      const ticket = event.tickets.find(t => t.id === ticketId)!;
-      return {
-        ticketId,
-        eventId: event.id,
-        quantity,
-        price: ticket.price
-      };
-    });
-
-    setCart(prevCart => {
-      const newCart = [...prevCart];
-      
-      cartItems.forEach(newItem => {
-        const existingIndex = newCart.findIndex(
-          item => item.ticketId === newItem.ticketId && item.eventId === newItem.eventId
-        );
-        
-        if (existingIndex >= 0) {
-          newCart[existingIndex].quantity += newItem.quantity;
-        } else {
-          newCart.push(newItem);
-        }
+  const addToCart = async () => {
+    setIsAddingToCart(true);
+    
+    try {
+      const cartItems: CartItem[] = Object.entries(selectedTickets).map(([ticketId, quantity]) => {
+        const ticket = event.tickets.find(t => t.id === ticketId)!;
+        return {
+          ticketId,
+          eventId: event.id,
+          quantity,
+          price: ticket.price
+        };
       });
-      
-      return newCart;
-    });
 
-    setSelectedTickets({});
-    toast.success(`${getTotalTickets()} ticket(s) added to cart!`);
-    onNavigate('checkout');
+      setCart(prevCart => {
+        const newCart = [...prevCart];
+        
+        cartItems.forEach(newItem => {
+          const existingIndex = newCart.findIndex(
+            item => item.ticketId === newItem.ticketId && item.eventId === newItem.eventId
+          );
+          
+          if (existingIndex >= 0) {
+            newCart[existingIndex].quantity += newItem.quantity;
+          } else {
+            newCart.push(newItem);
+          }
+        });
+        
+        return newCart;
+      });
+
+      setSelectedTickets({});
+      toast.success(`${getTotalTickets()} ticket(s) added to cart!`);
+      
+      // Small delay to show the loading state
+      await new Promise(resolve => setTimeout(resolve, 500));
+      onNavigate('checkout');
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
   const isEventPast = new Date(event.date) < new Date();
@@ -346,8 +367,9 @@ export function EventDetails({ eventId, onNavigate }: EventDetailsProps) {
                             className="w-full" 
                             size="lg"
                             onClick={addToCart}
+                            disabled={isAddingToCart}
                           >
-                            Add to Cart
+                            {isAddingToCart ? 'Adding to Cart...' : 'Add to Cart'}
                           </Button>
                         </div>
                       </>

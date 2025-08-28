@@ -3,11 +3,11 @@ import { Event, Ticket, User, Membership, MembershipBenefit } from './types';
 export const demoEvents: Event[] = [
   {
     id: 'event_1',
-    title: 'Tech Conference 2024',
+    title: 'Tech Conference 2026',
     description: 'Join industry leaders for the biggest tech conference of the year. Discover cutting-edge technologies, network with professionals, and gain insights into the future of technology.',
     imageUrl: '/api/placeholder/600/400',
     location: 'Convention Center, San Francisco',
-    date: '2024-06-15',
+    date: '2026-06-15',
     time: '09:00',
     organizer: 'TechEvents Inc.',
     category: 'Technology',
@@ -60,7 +60,7 @@ export const demoEvents: Event[] = [
     description: 'Experience three days of incredible music with top artists from around the world. Food trucks, art installations, and unforgettable performances await.',
     imageUrl: '/api/placeholder/600/400',
     location: 'Central Park, New York',
-    date: '2024-07-20',
+    date: '2026-07-20',
     time: '14:00',
     organizer: 'Summer Music Events',
     category: 'Music',
@@ -100,7 +100,7 @@ export const demoEvents: Event[] = [
     description: 'Transform your leadership skills with insights from Fortune 500 CEOs and industry veterans. Interactive workshops and networking opportunities included.',
     imageUrl: '/api/placeholder/600/400',
     location: 'Business Center, Chicago',
-    date: '2024-08-10',
+    date: '2026-08-10',
     time: '08:00',
     organizer: 'Leadership Corp',
     category: 'Business',
@@ -140,7 +140,7 @@ export const demoEvents: Event[] = [
     description: 'Discover culinary excellence with renowned chefs, wine tastings, and gourmet food experiences. A paradise for food enthusiasts.',
     imageUrl: '/api/placeholder/600/400',
     location: 'Expo Center, Los Angeles',
-    date: '2024-09-05',
+    date: '2026-09-05',
     time: '11:00',
     organizer: 'Culinary Events LA',
     category: 'Food & Drink',
@@ -342,7 +342,7 @@ export const demoComboOffers = [
     originalPrice: 798,
     discountedPrice: 599,
     savings: 199,
-    validUntil: '2024-05-31',
+    validUntil: '2026-05-31',
     isActive: true
   },
   {
@@ -353,7 +353,7 @@ export const demoComboOffers = [
     originalPrice: 288,
     discountedPrice: 219,
     savings: 69,
-    validUntil: '2024-06-30',
+    validUntil: '2026-06-30',
     isActive: true
   }
 ];

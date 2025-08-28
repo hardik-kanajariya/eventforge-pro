@@ -13,7 +13,7 @@ interface PublicHomePageProps {
 }
 
 export function PublicHomePage({ onNavigate }: PublicHomePageProps) {
-  const [events] = useKV<Event[]>("events", []);
+  const [events, , , eventsLoading] = useKV<Event[]>("events", []);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
 
@@ -94,7 +94,25 @@ export function PublicHomePage({ onNavigate }: PublicHomePageProps) {
           </div>
 
           {/* Events Grid */}
-          {filteredEvents.length === 0 ? (
+          {eventsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="overflow-hidden animate-pulse">
+                  <div className="aspect-video bg-muted"></div>
+                  <CardHeader>
+                    <div className="h-4 bg-muted rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-1/2"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-muted rounded w-full"></div>
+                      <div className="h-3 bg-muted rounded w-2/3"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : filteredEvents.length === 0 ? (
             <div className="text-center py-12">
               <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium text-foreground mb-2">No events found</h3>
