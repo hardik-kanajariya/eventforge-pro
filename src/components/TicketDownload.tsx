@@ -1,47 +1,63 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { Calendar, MapPin, Clock,
+import { Card } from './ui/card';
+import { Calendar, MapPin, Clock, Ticket as TicketIcon } from '@phosphor-icons/react';
+
 interface TicketDownloadProps {
   onClose: () => void;
+  ticket: {
+    id: string;
+    qrCode: string;
+    attendeeName: string;
+    attendeeEmail: string;
+    attendeePhone: string;
+    purchaseDate: string;
+    eventDetails: {
+      title: string;
+      date: string;
+      time: string;
+      location: string;
+      organizer: string;
+    };
+    ticketDetails: {
+      name: string;
+      price: number;
+    };
+  };
+}
 
-  const downloadTicketPDF = () 
-    const ticketWindow = w
+export default function TicketDownload({ onClose, ticket }: TicketDownloadProps) {
+  const downloadTicketPDF = () => {
+    const ticketWindow = window.open('', '_blank', 'width=800,height=1000');
+    if (!ticketWindow) return;
 
- 
-
+    const ticketHTML = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Event Ticket - ${ticket.eventDetails.title}</title>
           <style>
             body { 
+              font-family: Arial, sans-serif; 
+              margin: 0; 
+              padding: 20px; 
               background: #f8f9fa;
             }
-              max-width: 600px
-
-              box-shadow
-              positio
-            
-              
-              text-align: center;
-            .even
-              font-weight: bold;
-            }
-              font-size: 16px;
-              background: rgba(255
-              border-radius:
-            }
-              padding
-            .ticket-info {
-              grid-template-c
-              margin-bottom: 30p
-            .info-item {
+            .ticket {
+              max-width: 600px;
+              margin: 0 auto;
+              background: white;
+              border-radius: 12px;
               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
               overflow: hidden;
               position: relative;
-             
+            }
             .ticket-header {
               background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
               color: white;
               padding: 30px;
               text-align: center;
-            .
+            }
             .event-title {
               font-size: 28px;
               font-weight: bold;
@@ -66,74 +82,62 @@ interface TicketDownloadProps {
             }
             .info-item {
               display: flex;
-              font-size: 12px;
+              flex-direction: column;
+              border-left: 3px solid #667eea;
+              padding-left: 12px;
             }
-             
+            .info-label {
+              font-weight: bold;
+              color: #374151;
+              font-size: 14px;
+              margin-bottom: 4px;
             }
-        </head>
-          <div class="ticke
-              <div class="eve
-            <
-            <div class="t
-                <div class="inf
-                  <span class
-             
-                    day: 
-                </div>
-             
-                </div>
-                  <span class="inf
-                </div>
-                  <span class="in
-                </div>
-              
-                <h3 style="margin-
-             
-                </div>
-                  <span class="info-label">Email:</s
-                </div>
-                  <span class="i
-                </div>
-              
-                <h3 style="margin-bottom
-                  <div class="bar
-                  </div>
-                <div class="b
-             
-              </div>
-            
-              <p><strong>Ticket ID:</s
-              <div class="terms">
-                <p>• This t
-                <p>• Must be pre
-              </div>
-          </div>
-          <script>
-             
-          </script>
-      </html>
-
-    ticketWindow.document.close
-
-    // Generate a 
-      { width: 2, height: 30 },
-      { width: 3, height: 25
-      { width
-      { width: 2, height: 25
-    ];
-    return code.split('').slice(0, 20).m
-      const charCode = char.charC
-      const width = pattern.
-      return 
-  };
-  return (
-      <Card className="max-w
-          <div className="flex it
-            <Button variant="
-            </Button>
-
-          <div class
-              <h3 className="te
+            .info-value {
+              color: #6b7280;
+              font-size: 14px;
+            }
+            .attendee-info, .barcode-section {
+              border-top: 2px dashed #e5e7eb;
+              padding-top: 20px;
+              margin-bottom: 20px;
+            }
+            .barcode-visual {
+              background: white;
+              border: 2px solid #e5e7eb;
+              border-radius: 8px;
+              padding: 20px;
+              text-align: center;
+              margin: 15px 0;
+            }
+            .barcode-lines {
+              display: flex;
+              justify-content: center;
+              align-items: end;
+              height: 50px;
+              margin-bottom: 10px;
+              gap: 1px;
+            }
+            .bar {
+              background: #000;
+              border-radius: 1px;
+            }
+            .barcode {
+              font-family: monospace;
+              font-weight: bold;
+              font-size: 16px;
+              background: rgba(255, 255, 255, 0.8);
+              padding: 8px 16px;
+              border-radius: 4px;
+              display: inline-block;
+              margin-top: 10px;
+            }
+            .ticket-footer {
+              background: #f8f9fa;
+              padding: 20px 30px;
+              border-top: 1px solid #e5e7eb;
+            }
+            .terms p {
+              margin: 4px 0;
               font-size: 12px;
               line-height: 1.4;
             }
@@ -148,7 +152,7 @@ interface TicketDownloadProps {
             <div class="ticket-header">
               <div class="event-title">${ticket.eventDetails.title}</div>
               <div class="ticket-type">${ticket.ticketDetails.name}</div>
-                  
+            </div>
             
             <div class="ticket-body">
               <div class="ticket-info">
@@ -174,7 +178,7 @@ interface TicketDownloadProps {
                   <span class="info-value">${ticket.eventDetails.organizer}</span>
                 </div>
               </div>
-            {/
+              
               <div class="attendee-info">
                 <h3 style="margin-bottom: 10px; color: #1e40af;">Attendee Information</h3>
                 <div class="info-item" style="margin-bottom: 8px;">
@@ -196,12 +200,12 @@ interface TicketDownloadProps {
                 <div class="barcode-visual">
                   <div class="barcode-lines">
                     ${generateBarcodePattern(ticket.qrCode)}
-              
+                  </div>
+                  <div class="barcode">${ticket.qrCode}</div>
+                  <p style="font-size: 12px; color: #6b7280; margin-top: 10px;">
+                    Present this barcode at the event entrance for scanning
+                  </p>
                 </div>
-                <div class="barcode">${ticket.qrCode}</div>
-                <p style="font-size: 12px; color: #6b7280; margin-top: 10px;">
-                  Present this barcode at the event entrance for scanning
-                </p>
               </div>
             </div>
             
@@ -288,7 +292,7 @@ interface TicketDownloadProps {
                         day: 'numeric' 
                       })}
                     </p>
-
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -310,13 +314,13 @@ interface TicketDownloadProps {
                 </div>
 
                 <div className="flex items-center space-x-2">
-
+                  <TicketIcon className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-sm font-medium">Attendee</p>
                     <p className="text-sm text-muted-foreground">{ticket.attendeeName}</p>
-
+                  </div>
                 </div>
-
+              </div>
             </div>
 
             {/* Barcode Section */}
@@ -324,27 +328,26 @@ interface TicketDownloadProps {
               <div className="flex items-center justify-center mb-2">
                 <TicketIcon className="w-6 h-6 text-primary mr-2" />
                 <span className="font-medium">Entry Barcode</span>
-
+              </div>
               
-
               <div className="bg-white border border-gray-300 rounded p-3 mb-2">
                 <div className="flex justify-center items-end h-12 space-x-1">
                   {ticket.qrCode.split('').slice(0, 15).map((char, index) => {
                     const height = 20 + (char.charCodeAt(0) % 30);
                     const width = 2 + (char.charCodeAt(0) % 2);
-
+                    return (
                       <div 
-
+                        key={index}
                         className="bg-black"
-
+                        style={{ 
                           width: `${width}px`, 
                           height: `${height}px` 
                         }}
-
+                      />
                     );
-
+                  })}
                 </div>
-
+              </div>
               
               <p className="font-mono text-sm font-bold">{ticket.qrCode}</p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -354,15 +357,15 @@ interface TicketDownloadProps {
           </div>
 
           <div className="flex space-x-4">
-
+            <Button onClick={downloadTicketPDF} className="flex-1">
               Download PDF Ticket
-
-            <Button variant="outline" onClick={onClose}>
-
             </Button>
-
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+          </div>
         </div>
-
+      </Card>
     </div>
-
+  );
 }
